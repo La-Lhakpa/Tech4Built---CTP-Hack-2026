@@ -1,0 +1,42 @@
+{
+  "obligations": [
+    {
+      "id": "1",
+      "course": "CS 101",
+      "name": "Python Homework",
+      "dueDate": "2026-08-30",
+      "type": "homework",
+      "estimatedHours": 3,
+      "difficulty": "medium"
+    },
+    {
+      "id": "2",
+      "course": "DB 201",
+      "name": "Database Project",
+      "dueDate": "2026-08-31",
+      "type": "project",
+      "estimatedHours": 8,
+      "difficulty": "high"
+    },
+    {
+      "id": "3",
+      "course": "STAT 150",
+      "name": "Statistics Exam",
+      "dueDate": "2026-08-31",
+      "type": "exam",
+      "estimatedHours": 6,
+      "difficulty": "high"
+    }
+  ],
+  "availabilityPerDay": {
+    "2026-08-27": 3,
+    "2026-08-28": 3,
+    "2026-08-29": 1,
+    "2026-08-30": 3,
+    "2026-08-31": 2
+  },
+  "riskLevel": "HIGH",
+  "totalRequired": 17,
+  "totalAvailable": 12,
+  "hoursDeficit": 5
+}

@@ -1,0 +1,135 @@
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: left;
+  color: inherit;
+}
+
+.plan h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.plan__notice {
+  margin: 0;
+  padding: 0.625rem 0.875rem;
+  border-radius: 8px;
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  font-size: 0.875rem;
+}
+
+.plan__overview p {
+  margin: 0.25rem 0;
+  line-height: 1.5;
+}
+
+.plan__recommendation {
+  opacity: 0.85;
+  font-style: italic;
+}
+
+.plan__days {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.day {
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+}
+
+.day__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.day__head h4 {
+  margin: 0;
+  font-size: 0.975rem;
+}
+
+.day__date {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.day__hours {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+.day__hours--over {
+  color: #dc2626;
+  opacity: 1;
+  font-weight: 600;
+}
+
+.day__empty {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.day__tasks {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.task__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.task__name {
+  font-weight: 500;
+}
+
+.task__dur {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.task__notes {
+  margin: 0.2rem 0 0;
+  font-size: 0.825rem;
+  opacity: 0.7;
+  line-height: 1.4;
+}
+
+.plan__warnings ul,
+.plan__tips ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  line-height: 1.45;
+}
+
+.plan__warnings {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.plan__tips {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
