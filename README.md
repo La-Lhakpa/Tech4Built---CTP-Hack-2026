@@ -7,7 +7,7 @@ Team : Tech4Built CTP
 
 DeadlineRadar is a hackathon MVP that helps students understand whether their academic workload fits within the time they actually have available.
 
-Unlike a traditional calendar that only shows **when** assignments are due, DeadlineRadar analyzes **how much work is required**, compares it against available study time, detects workload collisions, and uses **Claude AI** to generate a realistic day-by-day preparation plan.
+Unlike a traditional calendar that only shows **when** assignments are due, DeadlineRadar analyzes **how much work is required**, compares it against available study time, detects workload collisions, and uses **Gemini** to generate a realistic day-by-day preparation plan.
 
 ---
 
