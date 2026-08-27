@@ -1,0 +1,47 @@
+### DeadlineRadar backend — manual test requests.
+### Open in VS Code (REST Client extension) or JetBrains and click "Send Request".
+### Or use the curl equivalents in README.md.
+
+@base = http://localhost:5000
+
+### Health check — confirms the server is up and the key is loaded
+GET {{base}}/health
+
+### Happy path — full collision payload (HIGH risk, 5h deficit)
+POST {{base}}/api/plan
+Content-Type: application/json
+
+{
+  "obligations": [
+    { "id": "1", "course": "CS 101", "name": "Python Homework",
+      "dueDate": "2026-08-30", "type": "homework", "estimatedHours": 3, "difficulty": "medium" },
+    { "id": "2", "course": "DB 201", "name": "Database Project",
+      "dueDate": "2026-08-31", "type": "project", "estimatedHours": 8, "difficulty": "high" },
+    { "id": "3", "course": "STAT 150", "name": "Statistics Exam",
+      "dueDate": "2026-08-31", "type": "exam", "estimatedHours": 6, "difficulty": "high" }
+  ],
+  "availabilityPerDay": {
+    "2026-08-27": 3, "2026-08-28": 3, "2026-08-29": 1, "2026-08-30": 3, "2026-08-31": 2
+  },
+  "riskLevel": "HIGH",
+  "totalRequired": 17,
+  "totalAvailable": 12,
+  "hoursDeficit": 5
+}
+
+### Minimal payload — server derives riskLevel + totals itself
+POST {{base}}/api/plan
+Content-Type: application/json
+
+{
+  "obligations": [
+    { "course": "HIST 200", "name": "Essay draft", "dueDate": "2026-09-05", "estimatedHours": 6, "difficulty": "low" }
+  ],
+  "availabilityPerDay": { "2026-09-01": 3, "2026-09-02": 3, "2026-09-03": 3 }
+}
+
+### Bad request — missing obligations → 400
+POST {{base}}/api/plan
+Content-Type: application/json
+
+{ "availabilityPerDay": { "2026-09-01": 3 } }
