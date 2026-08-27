@@ -1,0 +1,32 @@
+{
+  "obligations": [
+    {
+      "id": "1",
+      "course": "Computer Science 221",
+      "assignmentName": "Data Structures Project",
+      "dueDate": "2026-08-31",
+      "estimatedHours": 8,
+      "difficulty": "High",
+      "type": "Project"
+    },
+    {
+      "id": "2",
+      "course": "Statistics 150",
+      "assignmentName": "Midterm Exam",
+      "dueDate": "2026-08-31",
+      "estimatedHours": 6,
+      "difficulty": "High",
+      "type": "Exam"
+    },
+    {
+      "id": "3",
+      "course": "Computer Science 101",
+      "assignmentName": "Python Homework 4",
+      "dueDate": "2026-08-30",
+      "estimatedHours": 3,
+      "difficulty": "Medium",
+      "type": "Assignment"
+    }
+  ],
+  "availableHoursPerDay": 2
+}

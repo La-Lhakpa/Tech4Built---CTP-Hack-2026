@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import DeadlineRadarRoot from "@/components/deadline-radar-root";
 
 const title = "DeadlineRadar — Plan smarter, finish calmer";
-const description = "Spot workload collisions and build a realistic Gemini-powered study plan.";
+const description = "Spot workload collisions and build a realistic study plan.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();

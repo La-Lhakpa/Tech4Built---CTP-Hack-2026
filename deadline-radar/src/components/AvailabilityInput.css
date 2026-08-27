@@ -1,0 +1,38 @@
+.availability-input {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 10px;
+}
+
+.availability-input label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label-text {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.availability-input input {
+  padding: 0.75rem;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: inherit;
+  color: inherit;
+}
+
+.availability-input input:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.availability-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.65;
+}

@@ -11,7 +11,7 @@ A responsive student workload planner with collision detection and a Gemini-read
 ```bash
 npm install
 npm run dev
-npm run build
+npm run buildnpm
 ```
 
 This starter does not use `wrangler.jsonc`.

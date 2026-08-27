@@ -1,122 +1,102 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { requestPlan } from './services/planApi';
+import ObligationForm from './components/ObligationForm';
+import ObligationsList from './components/ObligationsList';
+import AvailabilityInput from './components/AvailabilityInput';
+import PlanDisplay from './components/PlanDisplay';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [obligations, setObligations] = useState([]);
+  const [availableHoursPerDay, setAvailableHoursPerDay] = useState(2);
+  const [plan, setPlan] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleAddObligation = (obligation) => {
+    setObligations((prev) => [...prev, obligation]);
+  };
+
+  const handleDeleteObligation = (id) => {
+    setObligations((prev) => prev.filter((o) => o.id !== id));
+  };
+
+  const handleGeneratePlan = async () => {
+    if (obligations.length === 0) {
+      setError('Add at least one obligation to generate a plan.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setPlan(null);
+
+    try {
+      const result = await requestPlan({
+        obligations,
+        availableHoursPerDay,
+      });
+      setPlan(result);
+    } catch (err) {
+      setError(err.message || 'Failed to generate the plan. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setObligations([]);
+    setAvailableHoursPerDay(2);
+    setPlan(null);
+    setError('');
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app">
+      <header className="app-header">
+        <h1>DeadlineRadar</h1>
+        <p>Know when your deadlines don't fit. Plan before you fall behind.</p>
+      </header>
 
-      <div className="ticks"></div>
+      {!plan ? (
+        <section className="input-section">
+          <div className="input-container">
+            <ObligationForm onAdd={handleAddObligation} />
+            <ObligationsList obligations={obligations} onDelete={handleDeleteObligation} />
+            <AvailabilityInput value={availableHoursPerDay} onChange={setAvailableHoursPerDay} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            {error && <p className="error-banner">{error}</p>}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+            <div className="action-buttons">
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handleGeneratePlan}
+                disabled={loading || obligations.length === 0}
+              >
+                {loading ? 'Generating plan...' : 'Generate plan'}
+              </button>
+              {obligations.length > 0 && (
+                <button type="button" className="btn-secondary" onClick={handleReset}>
+                  Clear all
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="plan-section">
+          <div className="plan-header">
+            <h2>Your study plan</h2>
+            <button type="button" className="btn-back" onClick={handleReset}>
+              ← Start over
+            </button>
+          </div>
+          <PlanDisplay plan={plan.plan} source={plan.source} reason={plan.reason} />
+        </section>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;

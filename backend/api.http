@@ -1,0 +1,70 @@
+### DeadlineRadar backend — manual test requests.
+### Open in VS Code (REST Client extension) or JetBrains and click "Send Request".
+### curl equivalents are in README.md.
+
+@base = http://localhost:8080
+
+### Health check — is the server up and the key loaded?
+GET {{base}}/health
+
+### Analysis — HIGH risk, 7-hour deficit
+POST {{base}}/api/analysis
+Content-Type: application/json
+
+{
+  "obligations": [
+    { "id": "1", "course": "Computer Science 221", "assignmentName": "Data Structures Project",
+      "dueDate": "2026-08-31", "estimatedHours": 8, "difficulty": "High", "type": "Project" },
+    { "id": "2", "course": "Statistics 150", "assignmentName": "Midterm Exam",
+      "dueDate": "2026-08-31", "estimatedHours": 6, "difficulty": "High", "type": "Exam" },
+    { "id": "3", "course": "Computer Science 101", "assignmentName": "Python Homework 4",
+      "dueDate": "2026-08-30", "estimatedHours": 3, "difficulty": "Medium", "type": "Assignment" }
+  ],
+  "availableHoursPerDay": 2
+}
+
+### Plan — same payload, Gemini-generated schedule
+POST {{base}}/api/plan
+Content-Type: application/json
+
+{
+  "obligations": [
+    { "id": "1", "course": "Computer Science 221", "assignmentName": "Data Structures Project",
+      "dueDate": "2026-08-31", "estimatedHours": 8, "difficulty": "High", "type": "Project" },
+    { "id": "2", "course": "Statistics 150", "assignmentName": "Midterm Exam",
+      "dueDate": "2026-08-31", "estimatedHours": 6, "difficulty": "High", "type": "Exam" },
+    { "id": "3", "course": "Computer Science 101", "assignmentName": "Python Homework 4",
+      "dueDate": "2026-08-30", "estimatedHours": 3, "difficulty": "Medium", "type": "Assignment" }
+  ],
+  "availableHoursPerDay": 2
+}
+
+### Analysis — LOW risk, workload fits comfortably
+POST {{base}}/api/analysis
+Content-Type: application/json
+
+{
+  "obligations": [
+    { "id": "1", "course": "History 200", "assignmentName": "Essay draft",
+      "dueDate": "2026-09-05", "estimatedHours": 6, "difficulty": "Low", "type": "Assignment" }
+  ],
+  "availableHoursPerDay": 3
+}
+
+### 400 — missing obligations
+POST {{base}}/api/analysis
+Content-Type: application/json
+
+{ "availableHoursPerDay": 2 }
+
+### 400 — invalid difficulty, type, and date
+POST {{base}}/api/analysis
+Content-Type: application/json
+
+{
+  "obligations": [
+    { "id": "1", "course": "X", "assignmentName": "Y", "dueDate": "2026-02-30",
+      "estimatedHours": 4, "difficulty": "Extreme", "type": "Quiz" }
+  ],
+  "availableHoursPerDay": 2
+}

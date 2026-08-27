@@ -5,14 +5,14 @@ import { Link } from "react-router-dom";
 import type { StudyPlan } from "@/lib/types";
 
 export default function PlanDisplay({ plan }: { plan: StudyPlan | null }) {
-  if (!plan) return <div className="surface-card mx-auto max-w-xl p-10 text-center"><CalendarCheck2 className="mx-auto text-[#2d6a55]" size={38} /><h2 className="mt-5 text-2xl font-bold">Your plan is waiting</h2><p className="mt-3 text-[#68766f]">Review your risk radar, then ask Gemini to build your day-by-day schedule.</p><Link className="secondary-button mt-7 inline-flex" to="/dashboard"><ArrowLeft size={17} /> Go to risk radar</Link></div>;
+  if (!plan) return <div className="surface-card mx-auto max-w-xl p-10 text-center"><CalendarCheck2 className="mx-auto text-[#2d6a55]" size={38} /><h2 className="mt-5 text-2xl font-bold">Your plan is waiting</h2><p className="mt-3 text-[#68766f]">Review your risk radar,Build your day-by-day schedule.</p><Link className="secondary-button mt-7 inline-flex" to="/dashboard"><ArrowLeft size={17} /> Go to risk radar</Link></div>;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr]">
       <aside className="space-y-5 lg:sticky lg:top-28 lg:self-start">
         <section className="rounded-[1.8rem] bg-[#183229] p-7 text-white sm:p-8">
           <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#b9e668] text-[#183229]"><Sparkles size={21} /></div>
-          <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#9db9af]">Gemini strategy</p>
+          <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#9db9af]">My Strategy</p>
           <h2 className="mt-3 text-2xl font-bold leading-tight">{plan.overview}</h2>
           <div className="mt-7 border-t border-white/10 pt-6"><div className="mb-3 flex items-center gap-2 text-sm font-bold text-[#dbe8e3]"><BrainCircuit size={17} /> Why this order?</div><p className="text-sm leading-6 text-[#a8c5ba]">{plan.reasoning}</p></div>
         </section>

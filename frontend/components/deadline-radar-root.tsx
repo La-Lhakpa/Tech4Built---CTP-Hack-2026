@@ -25,7 +25,7 @@ const demoObligations: Obligation[] = [
 
 export default function DeadlineRadarRoot() {
   const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
-  const [obligations, setObligations] = useState<Obligation[]>(demoObligations);
+  const [obligations, setObligations] = useState<Obligation[]>([]);
   const [availableHours, setAvailableHours] = useState(2);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(false);
@@ -93,7 +93,7 @@ function DashboardScreen({ obligations, analysis, loading, onRemove, onGenerate 
 }
 
 function PlanScreen({ plan }: { plan: StudyPlan | null }) {
-  return <section className="mx-auto max-w-7xl px-5 py-10 lg:px-8 lg:py-14"><div className="mb-9"><Eyebrow icon={<Sparkles size={14} />}>Step 3 · Gemini preparation plan</Eyebrow><h1 className="page-title mt-5">One clear move at a time.</h1><p className="page-intro">A focused daily sequence that respects your capacity, deadlines, and the difficulty of each task.</p></div><PlanDisplay plan={plan} /></section>;
+  return <section className="mx-auto max-w-7xl px-5 py-10 lg:px-8 lg:py-14"><div className="mb-9"><Eyebrow icon={<Sparkles size={14} />}>Step 3 ·Get Your Plan</Eyebrow><h1 className="page-title mt-5">One clear move at a time.</h1><p className="page-intro">A focused daily sequence that respects your capacity, deadlines, and the difficulty of each task.</p></div><PlanDisplay plan={plan} /></section>;
 }
 
 function Eyebrow({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Express proxy that turns DeadlineRadar collision data into a day-by-day plan via Gemini.",
+  "description": "Express API for DeadlineRadar: workload risk analysis + Gemini study plans.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
