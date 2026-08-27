@@ -45,21 +45,45 @@ export function parseRequest(body) {
     throw new ValidationError('Request body must be a JSON object.');
   }
 
-  const { obligations, availableHoursPerDay } = body;
+  const { obligations, availableHoursPerDay, availabilityPerDay } = body;
 
   if (!Array.isArray(obligations) || obligations.length === 0) {
     details.push('"obligations" must be a non-empty array.');
   }
 
-  const hoursPerDay = Number(availableHoursPerDay);
-  if (
-    availableHoursPerDay === undefined ||
-    availableHoursPerDay === null ||
-    availableHoursPerDay === '' ||
-    !Number.isFinite(hoursPerDay) ||
-    hoursPerDay < 0
-  ) {
-    details.push('"availableHoursPerDay" must be a number greater than or equal to 0.');
+  // Accept either simple (availableHoursPerDay: number) or detailed (availabilityPerDay: object)
+  let resolvedAvailability;
+
+  if (availabilityPerDay && typeof availabilityPerDay === 'object' && !Array.isArray(availabilityPerDay)) {
+    // Per-day format: validate and use as-is
+    const perDay = {};
+    let hasError = false;
+    for (const [date, hours] of Object.entries(availabilityPerDay)) {
+      const h = Number(hours);
+      if (!Number.isFinite(h) || h < 0) {
+        details.push(`availabilityPerDay["${date}"] must be a number greater than or equal to 0.`);
+        hasError = true;
+      } else {
+        perDay[date] = h;
+      }
+    }
+    if (Object.keys(perDay).length === 0 && !hasError) {
+      details.push('"availabilityPerDay" must contain at least one valid date.');
+    }
+    resolvedAvailability = { availabilityPerDay: perDay };
+  } else {
+    // Simple format: validate single number
+    const hoursPerDay = Number(availableHoursPerDay);
+    if (
+      availableHoursPerDay === undefined ||
+      availableHoursPerDay === null ||
+      availableHoursPerDay === '' ||
+      !Number.isFinite(hoursPerDay) ||
+      hoursPerDay < 0
+    ) {
+      details.push('"availableHoursPerDay" must be a number greater than or equal to 0.');
+    }
+    resolvedAvailability = { availableHoursPerDay: hoursPerDay };
   }
 
   const normalized = Array.isArray(obligations)
@@ -70,7 +94,7 @@ export function parseRequest(body) {
     throw new ValidationError('Invalid request body.', details);
   }
 
-  return { obligations: normalized, availableHoursPerDay: hoursPerDay };
+  return { obligations: normalized, ...resolvedAvailability };
 }
 
 function normalizeObligation(raw, index, details) {

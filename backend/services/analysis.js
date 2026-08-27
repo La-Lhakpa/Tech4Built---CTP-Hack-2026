@@ -20,20 +20,31 @@ export function planningWindow(obligations, today = todayISO()) {
 }
 
 /**
- * @param {{ obligations: Array<object>, availableHoursPerDay: number }} request
+ * @param {{ obligations: Array<object>, availableHoursPerDay?: number, availabilityPerDay?: Object }} request
  * @returns {{
  *   totalRequiredHours: number, totalAvailableHours: number, deficitHours: number,
  *   planningDays: number, riskLevel: 'Low'|'Medium'|'High',
  *   utilizationPercent: number, message: string,
  * }}
  */
-export function analyze({ obligations, availableHoursPerDay }, today = todayISO()) {
+export function analyze({ obligations, availableHoursPerDay, availabilityPerDay }, today = todayISO()) {
   const totalRequiredHours = round1(
     obligations.reduce((sum, o) => sum + o.estimatedHours, 0),
   );
 
-  const { days: planningDays } = planningWindow(obligations, today);
-  const totalAvailableHours = round1(planningDays * availableHoursPerDay);
+  const { days: planningDays, start, end } = planningWindow(obligations, today);
+
+  let totalAvailableHours;
+  if (availabilityPerDay && typeof availabilityPerDay === 'object') {
+    // Sum up per-day availability
+    totalAvailableHours = round1(
+      Object.values(availabilityPerDay).reduce((sum, h) => sum + (Number(h) || 0), 0),
+    );
+  } else {
+    // Use simple per-day average
+    totalAvailableHours = round1(planningDays * (availableHoursPerDay || 0));
+  }
+
   const deficitHours = round1(Math.max(0, totalRequiredHours - totalAvailableHours));
 
   const utilizationPercent =

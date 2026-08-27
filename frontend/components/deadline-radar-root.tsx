@@ -27,9 +27,17 @@ export default function DeadlineRadarRoot() {
   const mounted = useSyncExternalStore(() => () => undefined, () => true, () => false);
   const [obligations, setObligations] = useState<Obligation[]>([]);
   const [availableHours, setAvailableHours] = useState(2);
+  const [availabilityPerDay, setAvailabilityPerDay] = useState<Record<string, number> | null>(null);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(false);
-  const analysis = useMemo(() => analyzeLocally({ obligations, availableHoursPerDay: availableHours }), [obligations, availableHours]);
+  const analysis = useMemo(
+    () => analyzeLocally(
+      availabilityPerDay
+        ? { obligations, availabilityPerDay }
+        : { obligations, availableHoursPerDay: availableHours }
+    ),
+    [obligations, availableHours, availabilityPerDay]
+  );
 
   if (!mounted) {
     return <main className="grid min-h-screen place-items-center bg-[#f6f7f4]"><div className="spinner !border-[#c7d8ce] !border-t-[#174f3f]" aria-label="Loading DeadlineRadar" /></main>;
@@ -39,8 +47,8 @@ export default function DeadlineRadarRoot() {
     <HashRouter>
       <AppShell>
         <Routes>
-          <Route path="/" element={<InputScreen obligations={obligations} availableHours={availableHours} onHoursChange={setAvailableHours} onAdd={(item) => { setObligations((current) => [...current, item]); setPlan(null); }} />} />
-          <Route path="/dashboard" element={<DashboardScreen obligations={obligations} analysis={analysis} loading={loading} onRemove={(id) => { setObligations((current) => current.filter((item) => item.id !== id)); setPlan(null); }} onGenerate={async () => { setLoading(true); try { setPlan(await generateStudyPlan({ obligations, availableHoursPerDay: availableHours })); } finally { setLoading(false); } }} />} />
+          <Route path="/" element={<InputScreen obligations={obligations} availableHours={availableHours} onHoursChange={setAvailableHours} onPerDayChange={setAvailabilityPerDay} onAdd={(item) => { setObligations((current) => [...current, item]); setPlan(null); }} />} />
+          <Route path="/dashboard" element={<DashboardScreen obligations={obligations} analysis={analysis} loading={loading} onRemove={(id) => { setObligations((current) => current.filter((item) => item.id !== id)); setPlan(null); }} onGenerate={async () => { setLoading(true); try { setPlan(await generateStudyPlan(availabilityPerDay ? { obligations, availabilityPerDay } : { obligations, availableHoursPerDay: availableHours })); } finally { setLoading(false); } }} />} />
           <Route path="/plan" element={<PlanScreen plan={plan} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -74,13 +82,13 @@ function AppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function InputScreen({ obligations, availableHours, onHoursChange, onAdd }: { obligations: Obligation[]; availableHours: number; onHoursChange: (value: number) => void; onAdd: (item: Obligation) => void }) {
+function InputScreen({ obligations, availableHours, onHoursChange, onPerDayChange, onAdd }: { obligations: Obligation[]; availableHours: number; onHoursChange: (value: number) => void; onPerDayChange?: (availability: Record<string, number>) => void; onAdd: (item: Obligation) => void }) {
   return (
     <section className="mx-auto max-w-7xl px-5 py-10 lg:px-8 lg:py-14">
       <div className="mb-10 max-w-3xl"><Eyebrow icon={<Activity size={14} />}>Step 1 · Map your workload</Eyebrow><h1 className="page-title mt-5">Turn deadline chaos into a plan you can finish.</h1><p className="page-intro">Add each obligation and the time you can realistically study. DeadlineRadar will show whether everything fits before the week gets overwhelming.</p></div>
       <div className="grid items-start gap-6 lg:grid-cols-[1.18fr_0.82fr]">
         <AddObligationForm onAdd={onAdd} />
-        <div className="space-y-5"><AvailabilityHoursInput value={availableHours} onChange={onHoursChange} /><div className="surface-card flex items-center justify-between gap-4 p-5"><div><p className="font-bold">{obligations.length} obligations ready</p><p className="mt-1 text-sm text-[#68766f]">Review and remove them on the next screen.</p></div><Link className="round-arrow" to="/dashboard" aria-label="Continue to risk radar"><ArrowRight size={19} /></Link></div></div>
+        <div className="space-y-5"><AvailabilityHoursInput value={availableHours} onChange={onHoursChange} obligations={obligations} onPerDayChange={onPerDayChange} /><div className="surface-card flex items-center justify-between gap-4 p-5"><div><p className="font-bold">{obligations.length} obligations ready</p><p className="mt-1 text-sm text-[#68766f]">Review and remove them on the next screen.</p></div><Link className="round-arrow" to="/dashboard" aria-label="Continue to risk radar"><ArrowRight size={19} /></Link></div></div>
       </div>
     </section>
   );

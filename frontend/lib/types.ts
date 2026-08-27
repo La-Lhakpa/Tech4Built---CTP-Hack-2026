@@ -14,7 +14,8 @@ export interface Obligation {
 
 export interface PlannerInput {
   obligations: Obligation[];
-  availableHoursPerDay: number;
+  availableHoursPerDay?: number;
+  availabilityPerDay?: Record<string, number>;  // { "2026-08-27": 2, "2026-08-28": 3, ... }
 }
 
 export interface AnalysisResult {

@@ -59,7 +59,7 @@ Hard rules:
 /* ------------------------------------------------------------------ */
 
 export function buildPrompt(request, analysis, today = todayISO()) {
-  const { obligations, availableHoursPerDay } = request;
+  const { obligations, availableHoursPerDay, availabilityPerDay } = request;
   const { start, end } = planningWindow(obligations, today);
 
   const obligationLines = obligations
@@ -70,10 +70,22 @@ export function buildPrompt(request, analysis, today = todayISO()) {
     )
     .join('\n');
 
+  // Build per-day availability info
+  let availabilityInfo = '';
+  if (availabilityPerDay && typeof availabilityPerDay === 'object') {
+    const dates = Object.entries(availabilityPerDay)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, hours]) => `  ${date}: ${hours}h`)
+      .join('\n');
+    availabilityInfo = `\nAvailable hours per day (exact):\n${dates}`;
+  } else {
+    availabilityInfo = `\nAvailable study time: ${availableHoursPerDay}h on every day in the window.`;
+  }
+
   return [
     `Today is ${today}.`,
     `Planning window: ${start} through ${end} (${analysis.planningDays} days, inclusive).`,
-    `Available study time: ${availableHoursPerDay}h on every day in the window.`,
+    availabilityInfo,
     '',
     'WORKLOAD ANALYSIS:',
     `- Required: ${analysis.totalRequiredHours}h`,
@@ -90,6 +102,8 @@ export function buildPrompt(request, analysis, today = todayISO()) {
         `work, and use day "warning" fields to flag where the student must cut scope, add hours, ` +
         `or ask for an extension.`
       : `The workload fits. Spread it sensibly and leave room to review before each deadline.`,
+    '',
+    'CRITICAL: Never schedule more than the available hours on ANY given day. Days with 0h available are for recovery only—no tasks.',
     '',
     'Produce the JSON object now.',
   ].join('\n');
